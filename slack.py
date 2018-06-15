@@ -24,4 +24,27 @@ def sendWithAPI(text,to,name='',icon=''):
         'icon_emoji': icon,
         'channel' : to,
     }),headers = api_headers)
+
+def getChannelId(name):
+    url='https://slack.com/api/channels.list'
+    resp=requests.post(url,headers = api_headers)
+    channellist=(resp.json())['channels']
+    for i in range(len(channellist)):
+        if channellist[i]['name']==name:
+            return channellist[i]['id']
+
+def getUserList(channel):
+    url='https://slack.com/api/channels.info'
+    resp=requests.get(url,params={
+        'token': API_TOKEN,
+        'channel': getChannelId(channel)
     })
+    return resp.json()['channel']['members']
+
+def getUserRealName(userid):
+    url='https://slack.com/api/users.info'
+    resp=requests.get(url,params={
+        'token': API_TOKEN,
+        'user': userid
+    })
+    return (resp.json())['user']['profile']['real_name']
