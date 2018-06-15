@@ -33,6 +33,14 @@ def getChannelId(name):
         if channellist[i]['name']==name:
             return channellist[i]['id']
 
+def getChannelList():
+    url='https://slack.com/api/channels.list'
+    resp=requests.post(url,headers = api_headers)
+    channellist=(resp.json())['channels']
+    for i in range(len(channellist)):
+        channellist[i]=channellist[i]['name']
+    return channellist
+
 def getUserList(channel):
     url='https://slack.com/api/channels.info'
     resp=requests.get(url,params={
