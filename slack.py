@@ -11,6 +11,11 @@ def send(text,to,name='',icon=''):
         'channel' : to,
     }))
 
+api_headers={
+        'Authorization': 'Bearer ' + API_TOKEN,
+        'Content-Type': 'application/json; charset=utf-8'
+}
+
 def sendWithAPI(text,to,name='',icon=''):
     url='https://slack.com/api/chat.postMessage'
     requests.post(url, data = json.dumps({
@@ -18,7 +23,5 @@ def sendWithAPI(text,to,name='',icon=''):
         'username': name,
         'icon_emoji': icon,
         'channel' : to,
-    }),headers = {
-        'Authorization': 'Bearer ' + API_TOKEN,
-        'Content-Type': 'application/json; charset=utf-8'
+    }),headers = api_headers)
     })
