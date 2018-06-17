@@ -6,6 +6,7 @@ import requests ,json
 import key
 WEB_HOOK_URL=key.WEB_HOOK_URL()
 API_TOKEN=key.API_TOKEN()
+BOT_TOKEN=key.BOT_TOKEN()
 
 import datetime
 
@@ -16,6 +17,22 @@ def send(text,to,name='',icon=''):
         'icon_emoji': icon,
         'channel' : to,
     }))
+
+bot_headers={
+        'Authorization': 'Bearer ' + BOT_TOKEN,
+        'Content-Type': 'application/json; charset=utf-8'
+}
+def addReactionByBot(channel,ts,emoji):
+    url='https://slack.com/api/reactions.add'
+    resp=requests.post(url, data = json.dumps({
+        'name': emoji,
+        'channel': getChannelId(channel),
+        'timestamp': ts,
+    }),headers = bot_headers)
+    if resp.json()['ok']==False:
+        logger.error(resp.json()['error'])
+    else:
+        logger.info('add :'+emoji+': to #'+channel)
 
 api_headers={
         'Authorization': 'Bearer ' + API_TOKEN,
