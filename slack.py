@@ -34,6 +34,7 @@ def sendWithAPI(text,to,name='',icon=''):
         logger.error(resp.json()['error'])
     else:
         logger.info('sent "'+text+'" to '+to)
+        return resp.json()['ts']
 
 def getChannelId(name):
     url='https://slack.com/api/channels.list'
