@@ -3,6 +3,8 @@ import key
 WEB_HOOK_URL=key.WEB_HOOK_URL()
 API_TOKEN=key.API_TOKEN()
 
+import datetime
+
 def send(text,to,name='',icon=''):
     requests.post(WEB_HOOK_URL, data = json.dumps({
         'text': text,
@@ -56,3 +58,22 @@ def getUserRealName(userid):
         'user': userid
     })
     return (resp.json())['user']['profile']['real_name']
+
+def cleanChannel(channel,beforeHour):
+    ts=(datetime.datetime.now()-datetime.timedelta(hours=beforeHour)).timestamp()
+    chid=getChannelId(channel)
+    geturl='https://slack.com/api/channels.history'
+    resp=requests.get(geturl,params={
+        'token': API_TOKEN,
+        'channel': chid,
+        'latest': ts
+    })
+    l=resp.json()['messages']
+    tslist=[]
+    delurl='https://slack.com/api/chat.delete'
+    for i in l:
+        tslist.append(i['ts'])
+        requests.post(delurl, data = json.dumps({
+            'channel' : chid,
+            'ts': i['ts']
+        }),headers = api_headers)
