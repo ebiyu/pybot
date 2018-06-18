@@ -131,3 +131,22 @@ def cleanChannel(channel,beforeHour):
                 logger.debug('no message to delete in #'+channel)
     else:
         logger.error(resp.json()['error'])
+
+def getMessage(channel,afterHour):
+    ts=(datetime.datetime.now()-datetime.timedelta(hours=afterHour)).timestamp()
+    chid=getChannelId(channel)
+    geturl='https://slack.com/api/channels.history'
+    resp=requests.get(geturl,params={
+        'token': API_TOKEN,
+        'channel': chid,
+        'oldest': ts
+    })
+    if resp.json()['ok']:
+        l=resp.json()['messages']
+        return l
+        tslist=[]
+        for i in l:
+            tslist.append(i['ts'])
+            return tslist
+    else:
+        logger.error(resp.json()['error'])
